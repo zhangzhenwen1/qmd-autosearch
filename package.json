@@ -1,0 +1,25 @@
+{
+  "name": "qmd-autosearch",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "description": "DSH plugin: auto-supplement QMD semantic search when the model greps/globs a knowledge-base directory",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "dsh",
+    "qmd",
+    "semantic-search",
+    "mcp",
+    "knowledge-base"
+  ],
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
