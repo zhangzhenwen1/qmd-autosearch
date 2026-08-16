@@ -1,6 +1,6 @@
 {
   "name": "qmd-autosearch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "index.js",
   "description": "DSH plugin: auto-supplement QMD semantic search when the model greps/globs a knowledge-base directory",
