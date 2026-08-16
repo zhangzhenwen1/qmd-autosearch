@@ -15,9 +15,15 @@
   ],
   "files": [
     "index.js",
+    "cordis.patch.yml",
     "README.md",
     "LICENSE"
   ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
   "engines": {
     "node": ">=18"
   },

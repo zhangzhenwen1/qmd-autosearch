@@ -1,0 +1,5 @@
+# qmd-autosearch — bundle patch applied by `dsh plugin add qmd-autosearch`
+# 参照 awesome-dsh-plugin contributing.md 的 dsh.bundle 格式
+- insert:
+    - id: qmd-autosearch
+      name: qmd-autosearch
