@@ -201,25 +201,31 @@ export function apply(ctx, config) {
 			return resolve(p);
 		}
 	});
-	let rootsLoaded = false;
+	let rootsLoading = null;
+	// 懒加载触发路径池：失败时不置位，下次触发自动重试（QMD 暂时不可用不会导致永久静默）
 	const loadTriggerRoots = async () => {
-		if (rootsLoaded || triggerRoots.length > 0) return;
-		rootsLoaded = true;
-		try {
-			const { sessionId } = await mcpRequest(qmdUrl, null, "initialize", {
-				protocolVersion: "2025-03-26",
-				capabilities: {},
-				clientInfo: { name: "qmd-autosearch", version: "0.1.0" }
-			});
-			const { result } = await mcpRequest(qmdUrl, sessionId, "tools/call", {
-				name: "status",
-				arguments: {}
-			});
-			triggerRoots = parseCollectionRoots(extractText(result));
-			ctx.logger.info("qmd-autosearch: 触发路径池（来自 QMD 集合）%d 个", triggerRoots.length);
-		} catch (error) {
-			ctx.logger.warn("qmd-autosearch: 解析 QMD 集合路径失败: %o", error);
-		}
+		if (triggerRoots.length > 0) return;
+		if (rootsLoading !== null) return rootsLoading;
+		rootsLoading = (async () => {
+			try {
+				const { sessionId } = await mcpRequest(qmdUrl, null, "initialize", {
+					protocolVersion: "2025-03-26",
+					capabilities: {},
+					clientInfo: { name: "qmd-autosearch", version: "0.1.0" }
+				});
+				const { result } = await mcpRequest(qmdUrl, sessionId, "tools/call", {
+					name: "status",
+					arguments: {}
+				});
+				triggerRoots = parseCollectionRoots(extractText(result));
+				ctx.logger.info("qmd-autosearch: 触发路径池（来自 QMD 集合）%d 个", triggerRoots.length);
+			} catch (error) {
+				ctx.logger.warn("qmd-autosearch: 解析 QMD 集合路径失败（下次触发将重试）: %o", error);
+			} finally {
+				rootsLoading = null;
+			}
+		})();
+		return rootsLoading;
 	};
 
 	const isOurs = (message) => message.source?.kind === "plugin" && message.source?.plugin === name;
